@@ -1,0 +1,84 @@
+spring:
+  security:
+    jwt:
+      key: ruyu-blog-jwt-secret-key-2024
+      # jwt 的有效时间（天）
+      expire: 7
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://mysql:3306/blog?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:123456}
+  data:
+    redis:
+      # redis 端口
+      port: ${SPRING_REDIS_PORT:6379}
+      # redis 地址
+      host: ${SPRING_REDIS_HOST:redis}
+      # redis 密码（如果设置了密码）
+      password: ${SPRING_REDIS_PASSWORD:}
+      # redis连接超时时间（毫秒）
+      timeout: 10000
+      # 数据库索引，默认为0
+      database: 1
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  rabbitmq:
+    # rabbitmq 地址
+    host: ${SPRING_RABBITMQ_HOST:rabbitmq}
+    # rabbitmq 端口
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    # rabbitmq 用户名
+    username: ${SPRING_RABBITMQ_USERNAME:admin}
+    # rabbitmq 密码
+    password: ${SPRING_RABBITMQ_PASSWORD:123456}
+    listener:
+      simple:
+        retry:
+          enabled: true #是否开启消费者重试
+          max-attempts: 3 #最大重试次数
+          initial-interval: 6000 #重试间隔时间（单位毫秒）
+          multiplier: 2 #间隔时间乘子，间隔时间*乘子=下一次的间隔时间，最大不能超过设置的最大间隔时间
+          max-interval: 10000 #重试最大时间间隔（单位毫秒）
+    # 邮箱队列名称
+    queue:
+      email: email_queue
+  # 邮箱配置（可选，用于通知功能）
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: your-email@qq.com
+    password: your-email-authorization-code
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+# MinIO配置
+minio:
+  endpoint: ${MINIO_ENDPOINT:http://minio:9000}
+  access-key: ${MINIO_ACCESS_KEY:admin}
+  secret-key: ${MINIO_SECRET_KEY:12345678}
+  bucket-name: blog
+
+# 自定义配置
+blog:
+  # 网站域名
+  domain: http://localhost:8080
+  # 后台管理域名  
+  admin-domain: http://localhost:8081
+  # 文件上传路径
+  upload-path: /uploads/
+
+# 日志配置
+logging:
+  level:
+    xyz.kuailemao: debug
+    org.springframework.security: debug
+  file:
+    name: /app/logs/blog.log
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
